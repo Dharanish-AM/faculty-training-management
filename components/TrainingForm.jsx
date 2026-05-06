@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { Upload, Loader2, ArrowRight } from 'lucide-react';
+import { Upload, Loader2, ArrowRight, ClipboardCheck, Calendar } from 'lucide-react';
 
 export default function TrainingForm() {
   const [loading, setLoading] = useState(false);
@@ -84,13 +84,25 @@ export default function TrainingForm() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-0">
-      <div className="card-white p-6 sm:p-10">
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+              <ClipboardCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">Training Submission</h2>
+              <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mt-0.5">Faculty Professional Development Portal</p>
+            </div>
+          </div>
+        </div>
 
-        <form key="training-form-v2" onSubmit={handleSubmit} className="flex flex-col gap-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="facultyName" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Faculty Name</label>
+        <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8">
+          {/* Faculty Info Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="facultyName" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Faculty Name</label>
               <input
                 id="facultyName"
                 required
@@ -101,8 +113,8 @@ export default function TrainingForm() {
                 placeholder="e.g. Dr. Jane Smith"
               />
             </div>
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="companyName" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Company Name</label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="companyName" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Organization / Institution</label>
               <input
                 id="companyName"
                 required
@@ -110,32 +122,30 @@ export default function TrainingForm() {
                 value={formData.companyName}
                 onChange={handleChange}
                 className="input-style"
-                placeholder="Organization or Institution"
+                placeholder="Where did the training happen?"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="type" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">FDP / Program Type</label>
-              <div className="relative">
-                <select
-                  id="type"
-                  name="type"
-                  value={formData.type}
-                  onChange={handleChange}
-                  className="input-style bg-transparent appearance-none pr-10 cursor-pointer"
-                >
-                  <option value="Internship">Internship</option>
-                  <option value="Training">Training Program</option>
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-blue-500">
-                  <ArrowRight className="w-3.5 h-3.5 rotate-90" />
-                </div>
-              </div>
+          {/* Program Details Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="type" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Program Type</label>
+              <select
+                id="type"
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+                className="input-style cursor-pointer"
+              >
+                <option value="Internship">Internship</option>
+                <option value="Training">Training Program</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Seminar">Seminar / Conference</option>
+              </select>
             </div>
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="technology" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Core Technology</label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="technology" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Core Technology</label>
               <input
                 id="technology"
                 required
@@ -148,9 +158,9 @@ export default function TrainingForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="trainingName" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Program / Training Name</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="trainingName" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Program Title</label>
               <input
                 id="trainingName"
                 required
@@ -158,11 +168,11 @@ export default function TrainingForm() {
                 value={formData.trainingName}
                 onChange={handleChange}
                 className="input-style"
-                placeholder="Official title of the program"
+                placeholder="Full name of the training"
               />
             </div>
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="trainerName" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Trainer Name</label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="trainerName" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Trainer / Facilitator</label>
               <input
                 id="trainerName"
                 required
@@ -170,54 +180,62 @@ export default function TrainingForm() {
                 value={formData.trainerName}
                 onChange={handleChange}
                 className="input-style"
-                placeholder="Name of the trainer"
+                placeholder="Who led the session?"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="fromDate" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Commencement Date</label>
-              <input
-                id="fromDate"
-                required
-                type="date"
-                name="fromDate"
-                value={formData.fromDate}
-                onChange={handleChange}
-                className="input-style"
-              />
+          {/* Dates & Duration Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="fromDate" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Start Date</label>
+              <div className="relative">
+                <input
+                  id="fromDate"
+                  required
+                  type="date"
+                  name="fromDate"
+                  value={formData.fromDate}
+                  onChange={handleChange}
+                  className="input-style"
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="toDate" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Conclusion Date</label>
-              <input
-                id="toDate"
-                required
-                type="date"
-                name="toDate"
-                value={formData.toDate}
-                onChange={handleChange}
-                className="input-style"
-              />
+            <div className="flex flex-col gap-2">
+              <label htmlFor="toDate" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">End Date</label>
+              <div className="relative">
+                <input
+                  id="toDate"
+                  required
+                  type="date"
+                  name="toDate"
+                  value={formData.toDate}
+                  onChange={handleChange}
+                  className="input-style"
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-2 group">
-              <label htmlFor="totalDays" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Total Days</label>
-              <input
-                id="totalDays"
-                required
-                type="number"
-                min="1"
-                name="totalDays"
-                value={formData.totalDays}
-                onChange={handleChange}
-                className="input-style"
-                placeholder="e.g. 5"
-              />
+            <div className="flex flex-col gap-2">
+              <label htmlFor="totalDays" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Total Days</label>
+              <div className="relative">
+                <input
+                  id="totalDays"
+                  required
+                  type="number"
+                  min="1"
+                  name="totalDays"
+                  value={formData.totalDays}
+                  onChange={handleChange}
+                  className="input-style bg-slate-50/50"
+                  placeholder="0"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 group">
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-blue-600">Evidence / Proof Document</label>
+          {/* Upload Section */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Proof of Training</label>
             <div className="relative">
               <input
                 required
@@ -229,16 +247,16 @@ export default function TrainingForm() {
               />
               <label
                 htmlFor="proof-upload"
-                className="flex items-center justify-center w-full px-6 py-12 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50/30 transition-all group/upload"
+                className="flex items-center justify-center w-full px-6 py-10 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
               >
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mb-4 group-hover/upload:bg-blue-100 group-hover/upload:text-blue-600 transition-colors">
-                    <Upload className="w-6 h-6" />
+                  <div className="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+                    <Upload className="w-5 h-5" />
                   </div>
-                  <span className="text-xs font-bold text-slate-600 text-center uppercase tracking-wider">
-                    {file ? file.name : 'Upload Certificate or Evidence'}
+                  <span className="text-sm font-bold text-slate-700">
+                    {file ? file.name : 'Upload Document'}
                   </span>
-                  <p className="text-[10px] text-slate-400 mt-1 font-medium">PDF, PNG or JPG max 10MB</p>
+                  <p className="text-[10px] text-slate-400 mt-1 font-medium uppercase tracking-tighter">PDF or Image (Max 10MB)</p>
                 </div>
               </label>
             </div>
@@ -247,15 +265,15 @@ export default function TrainingForm() {
           <button
             disabled={loading}
             type="submit"
-            className="btn-primary w-full py-4 mt-4"
+            className="btn-primary w-full py-4"
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-white/70" />
-                <span className="uppercase tracking-widest font-black text-xs">Processing Submission...</span>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="uppercase tracking-widest font-black text-xs">Submitting...</span>
               </>
             ) : (
-              <span className="uppercase tracking-widest font-black text-xs">Verify and Submit Record</span>
+              <span className="uppercase tracking-widest font-black text-xs">Verify and Submit Details</span>
             )}
           </button>
         </form>

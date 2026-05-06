@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { decrypt } from '@/lib/auth';
 
-export async function middleware(request) {
+export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
   // Protect all /admin routes except /admin/login
