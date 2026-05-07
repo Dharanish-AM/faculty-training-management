@@ -151,7 +151,7 @@ export default function TrainingTable() {
   }
 
   return (
-    <div className="flex flex-col gap-8 pb-20 max-w-[1600px] mx-auto">
+    <div className="flex flex-col gap-8 pb-20 w-full px-6 md:px-10 mx-auto">
       {/* Header Section */}
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-sm">
@@ -199,8 +199,8 @@ export default function TrainingTable() {
 
       {/* Controls Section - ABOVE TABLE */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-80">
+        <div className="flex items-center gap-3 w-full sm:flex-1">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
@@ -211,12 +211,12 @@ export default function TrainingTable() {
             />
           </div>
           
-          <div className="flex items-center gap-2 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl">
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl sm:w-64">
             <Filter className="w-4 h-4 text-slate-400" />
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-600 outline-none cursor-pointer pr-2"
+              className="bg-transparent text-xs font-bold text-slate-600 outline-none cursor-pointer flex-1"
             >
               <option value="all">All Types</option>
               <option value="Internship">Internship</option>
@@ -224,31 +224,32 @@ export default function TrainingTable() {
             </select>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl">
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl sm:w-64">
             <ArrowUpDown className="w-4 h-4 text-slate-400" />
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-600 outline-none cursor-pointer pr-2"
+              className="bg-transparent text-xs font-bold text-slate-600 outline-none cursor-pointer flex-1"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
             </select>
           </div>
-        </div>
 
-        <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              {filteredTrainings.length} {filteredTrainings.length === 1 ? 'Record' : 'Records'} Found
-            </p>
-          </div>
-          <button onClick={handleExportCSV} className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-sm">
+          <button onClick={handleExportCSV} className="flex items-center justify-center gap-2 px-10 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-sm sm:w-64">
             <Download className="w-3.5 h-3.5" />
             <span>Export CSV</span>
           </button>
+
+          <div className="flex items-center gap-2 px-2">
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+              {filteredTrainings.length} {filteredTrainings.length === 1 ? 'Record' : 'Records'} Found
+            </p>
+          </div>
         </div>
+
+
       </div>
 
       {/* Table Section */}

@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { Upload, Loader2, ArrowRight, ClipboardCheck, Calendar } from 'lucide-react';
+import { Upload, Loader2, ClipboardCheck, X, FileText } from 'lucide-react';
+import { UploadDropzone } from '@/lib/uploadthing';
 
 export default function TrainingForm() {
   const [loading, setLoading] = useState(false);
@@ -15,8 +16,8 @@ export default function TrainingForm() {
     toDate: '',
     trainerName: '',
     totalDays: '',
+    proofUrl: '',
   });
-  const [file, setFile] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,10 +36,6 @@ export default function TrainingForm() {
     });
   };
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (new Date(formData.toDate) < new Date(formData.fromDate)) {
@@ -46,15 +43,20 @@ export default function TrainingForm() {
       return;
     }
 
+    if (!formData.proofUrl) {
+      toast.error('Please upload a proof document first');
+      return;
+    }
+
     setLoading(true);
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => data.append(key, formData[key]));
-    if (file) data.append('proof', file);
 
     try {
       const res = await fetch('/api/trainings', {
         method: 'POST',
-        body: data,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
       if (res.ok) {
@@ -69,8 +71,8 @@ export default function TrainingForm() {
           toDate: '',
           trainerName: '',
           totalDays: '',
+          proofUrl: '',
         });
-        setFile(null);
         e.target.reset();
       } else {
         const error = await res.json();
@@ -99,7 +101,6 @@ export default function TrainingForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8">
-          {/* Faculty Info Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="facultyName" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Faculty Name</label>
@@ -127,7 +128,6 @@ export default function TrainingForm() {
             </div>
           </div>
 
-          {/* Program Details Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="type" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Program Type</label>
@@ -185,81 +185,82 @@ export default function TrainingForm() {
             </div>
           </div>
 
-          {/* Dates & Duration Section */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="fromDate" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Start Date</label>
-              <div className="relative">
-                <input
-                  id="fromDate"
-                  required
-                  type="date"
-                  name="fromDate"
-                  value={formData.fromDate}
-                  onChange={handleChange}
-                  className="input-style"
-                />
-              </div>
+              <input
+                id="fromDate"
+                required
+                type="date"
+                name="fromDate"
+                value={formData.fromDate}
+                onChange={handleChange}
+                className="input-style"
+              />
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="toDate" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">End Date</label>
-              <div className="relative">
-                <input
-                  id="toDate"
-                  required
-                  type="date"
-                  name="toDate"
-                  value={formData.toDate}
-                  onChange={handleChange}
-                  className="input-style"
-                />
-              </div>
+              <input
+                id="toDate"
+                required
+                type="date"
+                name="toDate"
+                value={formData.toDate}
+                onChange={handleChange}
+                className="input-style"
+              />
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="totalDays" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Total Days</label>
-              <div className="relative">
-                <input
-                  id="totalDays"
-                  required
-                  type="number"
-                  min="1"
-                  name="totalDays"
-                  value={formData.totalDays}
-                  onChange={handleChange}
-                  className="input-style bg-slate-50/50"
-                  placeholder="0"
-                />
-              </div>
+              <input
+                id="totalDays"
+                required
+                type="number"
+                min="1"
+                name="totalDays"
+                value={formData.totalDays}
+                onChange={handleChange}
+                className="input-style bg-slate-50/50"
+                placeholder="0"
+              />
             </div>
           </div>
 
-          {/* Upload Section */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Proof of Training</label>
-            <div className="relative">
-              <input
-                required
-                type="file"
-                onChange={handleFileChange}
-                accept="image/*,application/pdf"
-                className="hidden"
-                id="proof-upload"
-              />
-              <label
-                htmlFor="proof-upload"
-                className="flex items-center justify-center w-full px-6 py-10 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
-              >
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
-                    <Upload className="w-5 h-5" />
+            
+            {formData.proofUrl ? (
+              <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-2xl group animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center">
+                    <FileText className="w-5 h-5" />
                   </div>
-                  <span className="text-sm font-bold text-slate-700">
-                    {file ? file.name : 'Upload Document'}
-                  </span>
-                  <p className="text-[10px] text-slate-400 mt-1 font-medium uppercase tracking-tighter">PDF or Image (Max 10MB)</p>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Document Uploaded</p>
+                    <a href={formData.proofUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] text-blue-600 font-bold uppercase tracking-tight hover:underline">View Uploaded File</a>
+                  </div>
                 </div>
-              </label>
-            </div>
+                <button 
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, proofUrl: '' }))}
+                  className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <UploadDropzone
+                endpoint="proofUploader"
+                onClientUploadComplete={(res) => {
+                  setFormData(prev => ({ ...prev, proofUrl: res[0].ufsUrl }));
+                  toast.success("File uploaded successfully!");
+                }}
+                onUploadError={(error) => {
+                  toast.error(`Upload failed: ${error.message}`);
+                }}
+                className="ut-label:text-blue-600 ut-button:bg-blue-600 ut-button:ut-readying:bg-blue-500/50 ut-button:ut-uploading:bg-blue-500/50 border-2 border-dashed border-slate-200 rounded-2xl hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer"
+              />
+            )}
           </div>
 
           <button

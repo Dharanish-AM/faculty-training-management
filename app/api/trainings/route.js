@@ -1,35 +1,27 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Training from '@/models/Training';
-import { uploadToCloudinary } from '@/lib/cloudinary';
 
 export async function POST(req) {
   try {
     await connectDB();
-    const formData = await req.formData();
+    const data = await req.json();
     
-    const file = formData.get('proof');
-    if (!file) {
-      return NextResponse.json({ error: 'Proof file is required' }, { status: 400 });
+    if (!data.proofUrl) {
+      return NextResponse.json({ error: 'Proof file URL is required' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Upload to Cloudinary
-    const cloudinaryResponse = await uploadToCloudinary(buffer, file.name);
-
     const trainingData = {
-      facultyName: formData.get('facultyName'),
-      companyName: formData.get('companyName'),
-      type: formData.get('type'),
-      trainingName: formData.get('trainingName'),
-      technology: formData.get('technology'),
-      trainerName: formData.get('trainerName'),
-      totalDays: Number(formData.get('totalDays')),
-      fromDate: new Date(formData.get('fromDate')),
-      toDate: new Date(formData.get('toDate')),
-      proofUrl: cloudinaryResponse.secure_url,
+      facultyName: data.facultyName,
+      companyName: data.companyName,
+      type: data.type,
+      trainingName: data.trainingName,
+      technology: data.technology,
+      trainerName: data.trainerName,
+      totalDays: Number(data.totalDays),
+      fromDate: new Date(data.fromDate),
+      toDate: new Date(data.toDate),
+      proofUrl: data.proofUrl,
     };
 
     const newTraining = await Training.create(trainingData);

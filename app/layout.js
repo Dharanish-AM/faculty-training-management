@@ -1,5 +1,6 @@
 import { Poppins, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "@uploadthing/react/styles.css";
 import ToasterProvider from "@/components/ToasterProvider";
 import Navbar from "@/components/Navbar";
 
